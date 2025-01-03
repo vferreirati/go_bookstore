@@ -4,7 +4,7 @@ import "github.com/vferreirati/go_bookstore/internal/models"
 
 type Service interface {
 	GetAll() ([]map[string]interface{}, error)
-	CreateBook(name string, userID string) (map[string]interface{}, error)
+	CreateBook(name string, userID int) (models.Book, error)
 }
 
 type service struct {
@@ -19,10 +19,10 @@ func (s *service) GetAll() ([]map[string]interface{}, error) {
 	return s.repository.GetAll()
 }
 
-func (s *service) CreateBook(name string, userID string) (models.Book, error) {
+func (s *service) CreateBook(name string, userID int) (models.Book, error) {
 	id, err := s.repository.CreateBook(name, userID)
 	if err != nil {
-		return nil, err
+		return models.Book{}, err
 	}
 
 	return models.Book{ID: id, Name: name, UserID: userID}, nil
