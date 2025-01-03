@@ -24,6 +24,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /books", handler.ListBooks)
+	mux.HandleFunc("POST /books", handler.CreateBook)
 
 	fmt.Println("Starting server at port 8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {

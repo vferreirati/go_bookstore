@@ -4,6 +4,7 @@ import "database/sql"
 
 type Repository interface {
 	GetAll() ([]map[string]interface{}, error)
+	CreateBook(name string, userID string) (int, error)
 }
 
 type repository struct {
@@ -33,4 +34,15 @@ func (r *repository) GetAll() ([]map[string]interface{}, error) {
 		})
 	}
 	return books, nil
+}
+
+func (r *repository) CreateBook(name string, userID string) (int, error) {
+	query := "INSERT INTO books (name, user_id) VALUES ($1, $2)  RETURNING id"
+	var id int
+	err := r.db.QueryRow(query, name, userID).Scan(&id)
+	if err != nil {
+		return -1, err
+	}
+
+	return id, nil
 }
