@@ -1,9 +1,13 @@
 package books
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"github.com/vferreirati/go_bookstore/internal/models"
+)
 
 type Repository interface {
-	GetAll() ([]map[string]interface{}, error)
+	GetAll() ([]models.Book, error)
 	CreateBook(name string, userID int) (int, error)
 }
 
@@ -15,23 +19,20 @@ func NewRepository(db *sql.DB) Repository {
 	return &repository{db}
 }
 
-func (r *repository) GetAll() ([]map[string]interface{}, error) {
+func (r *repository) GetAll() ([]models.Book, error) {
 	rows, err := r.db.Query("SELECT id, name FROM books")
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var books []map[string]interface{}
+	var books []models.Book
 	for rows.Next() {
-		var id, name string
-		if err := rows.Scan(&id, &name); err != nil {
+		var book models.Book
+		if err := rows.Scan(&book.ID, &book.Name, &book.UserID); err != nil {
 			return nil, err
 		}
-		books = append(books, map[string]interface{}{
-			"id":   id,
-			"name": name,
-		})
+		books = append(books, book)
 	}
 	return books, nil
 }

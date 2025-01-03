@@ -3,7 +3,7 @@ package books
 import "github.com/vferreirati/go_bookstore/internal/models"
 
 type Service interface {
-	GetAll() ([]map[string]interface{}, error)
+	GetAll() ([]models.Book, error)
 	CreateBook(name string, userID int) (models.Book, error)
 }
 
@@ -15,7 +15,7 @@ func NewService(repository Repository) Service {
 	return &service{repository}
 }
 
-func (s *service) GetAll() ([]map[string]interface{}, error) {
+func (s *service) GetAll() ([]models.Book, error) {
 	return s.repository.GetAll()
 }
 
