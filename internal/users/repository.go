@@ -9,6 +9,7 @@ import (
 
 type Repository interface {
 	CreateUser(name, email, password string) (models.User, error)
+	GetByEmail(email string) (models.User, error)
 }
 
 type repository struct {
@@ -32,6 +33,17 @@ func (r *repository) CreateUser(name, email, password string) (models.User, erro
 	}
 
 	return models.User{ID: id, Name: name, Email: email, Password: hashedPassword}, nil
+}
+
+func (r *repository) GetByEmail(email string) (models.User, error) {
+	query := "SELECT id, name, email, password FROM users WHERE email = $1"
+	var user models.User
+	err := r.db.QueryRow(query, email).Scan(&user.ID, &user.Name, &user.Email, &user.Password)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
 }
 
 func hashPassword(password string) (string, error) {

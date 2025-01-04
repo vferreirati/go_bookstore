@@ -31,6 +31,7 @@ func main() {
 	userService := users.NewService(userRepository)
 	userHandler := users.NewHandler(userService)
 	mux.HandleFunc("POST /users", userHandler.HandleCreateUser)
+	mux.HandleFunc("POST /login", userHandler.HandleLogin)
 
 	fmt.Println("Starting server at port 8080")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
